@@ -7,11 +7,29 @@ export default class SingleRecipe extends Component {
     super(props);
     const id = this.props.match.params.id;
     this.state = {
-      recipe: recipeData,
+      // recipe: recipeData,
+      recipe: {},
       id,
-      loading: false
+      loading: true
     };
   }
+
+  async componentDidMount() {
+    const url = `https://www.food2fork.com/api/get?key=${
+      process.env.REACT_APP_API_KEY
+    }&rId=${this.state.id}`;
+    try {
+      const response = await fetch(url);
+      const responseData = await response.json();
+      this.setState({
+        recipe: responseData.recipe,
+        loading: false
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     const {
       image_url,
@@ -23,7 +41,7 @@ export default class SingleRecipe extends Component {
     } = this.state.recipe;
     if (this.state.loading) {
       return (
-        <div classname="container">
+        <div className="container">
           <div className="row">
             <div className="col-10 mx-autocol-md-6 my-3 ">
               <h2 className="text-uppercase text-orange text-center">
@@ -53,7 +71,7 @@ export default class SingleRecipe extends Component {
           </div>
           {/* {info} */}
           <div className="col-10 mx-auto col-md-6 my-3">
-            <h6 calssName=" text-uppercase">{title}</h6>
+            <h6 className=" text-uppercase">{title}</h6>
             <h6 className="text-warning text-capitalize text-slanted">
               {" "}
               provided by {publisher}
